@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.system.dao.QuoteDao">
+
+	<select id="get" resultType="com.bootdo.system.domain.QuoteDO">
+		select `id`,`item_code`,`name`,`supplier`,`RMB_price`,`USD_price`,`manufacturer_item_code`,`quote_date`,`remark`,`del_flag`,`create_time`,`create_by`,`update_time`,`update_by` from quote where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.system.domain.QuoteDO">
+		select `id`,`item_code`,`name`,`supplier`,`RMB_price`,`USD_price`,`manufacturer_item_code`,`quote_date`,`remark`,`del_flag`,`create_time`,`create_by`,`update_time`,`update_by`,source_quotation from quote
+        <where>
+			del_flag = 0
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="itemCode != null and itemCode != ''"> and item_code like CONCAT('%',#{itemCode},'%') </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="supplier != null and supplier != ''"> and supplier = #{supplier} </if>
+		  		  <if test="rmbPrice != null and rmbPrice != ''"> and RMB_price = #{rmbPrice} </if>
+		  		  <if test="usdPrice != null and usdPrice != ''"> and USD_price = #{usdPrice} </if>
+		  		  <if test="manufacturerItemCode != null and manufacturerItemCode != ''"> and manufacturer_item_code like CONCAT('%',#{manufacturerItemCode},'%') </if>
+		  		  <if test="quoteDate != null and quoteDate != ''"> and quote_date = #{quoteDate} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from quote
+		 <where>
+			 del_flag = 0
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+			 <if test="itemCode != null and itemCode != ''"> and item_code like CONCAT('%',#{itemCode},'%') </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="supplier != null and supplier != ''"> and supplier = #{supplier} </if>
+		  		  <if test="rmbPrice != null and rmbPrice != ''"> and RMB_price = #{rmbPrice} </if>
+		  		  <if test="usdPrice != null and usdPrice != ''"> and USD_price = #{usdPrice} </if>
+			 <if test="manufacturerItemCode != null and manufacturerItemCode != ''"> and manufacturer_item_code like CONCAT('%',#{manufacturerItemCode},'%') </if>
+		  		  <if test="quoteDate != null and quoteDate != ''"> and quote_date = #{quoteDate} </if>
+		  		  <if test="delFlag != null and delFlag != ''"> and del_flag = #{delFlag} </if>
+		  		  <if test="createTime != null and createTime != ''"> and create_time = #{createTime} </if>
+		  		  <if test="createBy != null and createBy != ''"> and create_by = #{createBy} </if>
+		  		  <if test="updateTime != null and updateTime != ''"> and update_time = #{updateTime} </if>
+		  		  <if test="updateBy != null and updateBy != ''"> and update_by = #{updateBy} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.system.domain.QuoteDO">
+		insert into quote
+		(
+			`id`, 
+			`item_code`, 
+			`name`, 
+			`supplier`, 
+			`RMB_price`, 
+			`USD_price`, 
+			`manufacturer_item_code`, 
+			`quote_date`, 
+			`del_flag`, 
+			`create_time`, 
+			`create_by`, 
+			`update_time`, 
+			`update_by`
+		)
+		values
+		(
+			#{id}, 
+			#{itemCode}, 
+			#{name}, 
+			#{supplier}, 
+			#{rmbPrice}, 
+			#{usdPrice}, 
+			#{manufacturerItemCode}, 
+			#{quoteDate}, 
+			#{delFlag}, 
+			#{createTime}, 
+			#{createBy}, 
+			#{updateTime}, 
+			#{updateBy}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.system.domain.QuoteDO">
+		update quote 
+		<set>
+			<if test="itemCode != null">`item_code` = #{itemCode}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="supplier != null">`supplier` = #{supplier}, </if>
+			<if test="rmbPrice != null">`RMB_price` = #{rmbPrice}, </if>
+			<if test="usdPrice != null">`USD_price` = #{usdPrice}, </if>
+			<if test="manufacturerItemCode != null">`manufacturer_item_code` = #{manufacturerItemCode}, </if>
+			<if test="quoteDate != null">`quote_date` = #{quoteDate}, </if>
+			<if test="sourceQuotation != null and sourceQuotation != ''">source_quotation = #{sourceQuotation}, </if>
+			<if test="delFlag != null">`del_flag` = #{delFlag}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}, </if>
+			<if test="createBy != null">`create_by` = #{createBy}, </if>
+			<if test="updateTime != null">`update_time` = #{updateTime}, </if>
+			<if test="updateBy != null">`update_by` = #{updateBy}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!--<delete id="remove">
+		delete from quote where id = #{value}
+	</delete>-->
+	<update id="remove">
+		update quote set del_flag = 1 where id = #{value}
+	</update>
+
+	<!--<delete id="batchRemove">
+		delete from quote where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>-->
+	<delete id="batchRemove">
+		update quote set del_flag = 1 where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<insert id="batchSave" parameterType="com.bootdo.system.domain.QuoteDO">
+		insert into quote
+		(
+			`item_code`,
+			`name`,
+			`supplier`,
+			`RMB_price`,
+			`USD_price`,
+			`manufacturer_item_code`,
+			`quote_date`,
+			`create_time`,
+			`create_by`
+		)
+		values
+		<foreach collection="list" item="quote" separator=",">
+			(#{quote.itemCode},
+			#{quote.name},
+			#{quote.supplier},
+			#{quote.rmbPrice},
+			#{quote.usdPrice},
+			#{quote.manufacturerItemCode},
+			#{quote.quoteDate},
+			#{quote.createTime},
+			#{quote.createBy})
+		</foreach>
+	</insert>
+</mapper>
